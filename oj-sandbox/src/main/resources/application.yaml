@@ -2,6 +2,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+sandbox:
+  mount-path: /usr/local/project/OJ/sandbox
 server:
   port: 8122
   address: 0.0.0.0
