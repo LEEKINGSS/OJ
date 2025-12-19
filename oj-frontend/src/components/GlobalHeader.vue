@@ -19,7 +19,7 @@
           >
             <div class="titlebar">
               <img class="logo" src="../assets/logo.png" alt="" />
-              <div class="title">力扣</div>
+              <div class="title">Code demo</div>
             </div>
           </a-menu-item>
 

@@ -269,6 +269,14 @@ const tagsList = ref([
       { value: "大数运算", checked: false },
     ],
   },
+  {
+    title: "ECC加解密",
+    tags: [
+      { value: "ECC的点乘运算实现", checked: false },
+      { value: "ECC加解密流程", checked: false },
+      { value: "明文嵌入方法（至少实现2种）", checked: false },
+    ],
+  },
 ]);
 const customCheck = (
   tag: { value: string; checked: boolean },

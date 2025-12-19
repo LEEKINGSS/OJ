@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -30,17 +31,19 @@ import java.util.UUID;
 import static com.binzc.oj.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
-* @author binzc
-* @description 针对表【user(用户)】的数据库操作Service实现
-* @createDate 2025-05-08 21:02:49
-*/
+ * @author binzc
+ * @description 针对表【user(用户)】的数据库操作Service实现
+ * @createDate 2025-05-08 21:02:49
+ */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService {
+        implements UserService, Serializable {
     private static final String SALT = "binzc";
+    private static final long serialVersionUID = 1L;
+
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword,String userRole) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String userRole) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -143,6 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 上传头像
+     *
      * @param file
      * @param request
      * @return
@@ -152,7 +156,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public String uploadAvatar(MultipartFile file, HttpServletRequest request) {
         //final User user = this.getLoginUser(request);
         //long userId=user.getId();
-        long userId=1;
+        long userId = 1;
         try {
             // 获取运行目录（backend），跳出到其父目录
             File projectDir = new File(System.getProperty("user.dir"));
@@ -164,7 +168,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
             // 构造文件名格式为 年月日_用户id.后缀
             String originalFilename = file.getOriginalFilename();
-            String suffix= FileUtils.getFileExtension(originalFilename);
+            String suffix = FileUtils.getFileExtension(originalFilename);
             String dateStr = new SimpleDateFormat("yyyyMMdd").format(new Date());
             String fileName = dateStr + "_" + userId + suffix;
             File dest = new File(saveDir, fileName);
@@ -183,6 +187,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 确认修改头像
+     *
      * @param url
      * @param yesOrNo
      * @param request
@@ -196,12 +201,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
-        long userId= currentUser.getId();
-        if(yesOrNo){
+        long userId = currentUser.getId();
+        if (yesOrNo) {
             currentUser.setUserAvatar(url);
             this.baseMapper.updateById(currentUser);
             return "修改成功";
-        }else{
+        } else {
             // 处理文件路径
             String filename = url.substring(url.lastIndexOf("/") + 1);
             // static 目录在项目的同级目录，需要向上一级跳出到 static 目录

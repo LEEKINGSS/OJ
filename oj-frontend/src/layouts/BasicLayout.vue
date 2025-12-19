@@ -7,10 +7,10 @@
       <a-layout-content class="content" style="background: #efefef">
         <router-view />
       </a-layout-content>
-      <a-layout-footer class="footer">
+      <!-- <a-layout-footer class="footer">
         Footer
         <a href="https://www.google.com">shabi</a>
-      </a-layout-footer>
+      </a-layout-footer> -->
     </a-layout>
   </div>
 </template>
