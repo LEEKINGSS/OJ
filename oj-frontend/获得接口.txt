@@ -1,2 +1,2 @@
-curl http://localhost:8121/api/v2/api-docs -o api-docs.json
+curl http://172.22.232.42:8121/api/v2/api-docs -o api-docs.json
 npx openapi --input ./api-docs.json --output ./generated --client axios
