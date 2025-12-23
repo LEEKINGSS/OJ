@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { BaseResponse } from './models/BaseResponse';
 export type { BaseResponse_CodeVo_ } from './models/BaseResponse_CodeVo_';
+export type { BaseResponse_List_ListUserVO_ } from './models/BaseResponse_List_ListUserVO_';
 export type { BaseResponse_LoginUserVO_ } from './models/BaseResponse_LoginUserVO_';
 export type { BaseResponse_long_ } from './models/BaseResponse_long_';
 export type { BaseResponse_QuestionDetailSafeVo_ } from './models/BaseResponse_QuestionDetailSafeVo_';
@@ -22,6 +23,7 @@ export type { JudgeCase } from './models/JudgeCase';
 export type { JudgeConfig } from './models/JudgeConfig';
 export type { JudgeInfo } from './models/JudgeInfo';
 export type { JudgeMessage } from './models/JudgeMessage';
+export type { ListUserVO } from './models/ListUserVO';
 export type { LoginUserVO } from './models/LoginUserVO';
 export type { QueryParmRequest } from './models/QueryParmRequest';
 export type { QuestionAddRequest } from './models/QuestionAddRequest';
@@ -34,8 +36,10 @@ export type { SubmitRecodWithPageVo } from './models/SubmitRecodWithPageVo';
 export type { SubmitRecordDetail } from './models/SubmitRecordDetail';
 export type { SubmitRecordSimple } from './models/SubmitRecordSimple';
 export type { UserConfirmChangeAvatar } from './models/UserConfirmChangeAvatar';
+export type { UserListRequest } from './models/UserListRequest';
 export type { UserLoginRequest } from './models/UserLoginRequest';
 export type { UserRegisterRequest } from './models/UserRegisterRequest';
+export type { UserUpdateRequest } from './models/UserUpdateRequest';
 
 export { QuestionControllerService } from './services/QuestionControllerService';
 export { QuestionSubmitControllerService } from './services/QuestionSubmitControllerService';

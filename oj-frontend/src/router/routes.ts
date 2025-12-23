@@ -1,7 +1,7 @@
 import { RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import HideView from "@/components/HideView.vue";
-import AdminView from "@/components/Admin.vue";
+import AdminView from "@/components/AdminPage.vue";
 import ACCESS_ENUM from "@/access/accessEnum";
 import NoAuthView from "@/components/NoAuthView.vue";
 import CallerComponent from "@/components/CallerComponent.vue";
