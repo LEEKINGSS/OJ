@@ -4,10 +4,9 @@ import com.binzc.oj.common.BaseResponse;
 import com.binzc.oj.common.ErrorCode;
 import com.binzc.oj.common.ResultUtils;
 import com.binzc.oj.exception.BusinessException;
-import com.binzc.oj.model.dto.user.UserConfirmChangeAvatar;
-import com.binzc.oj.model.dto.user.UserLoginRequest;
-import com.binzc.oj.model.dto.user.UserRegisterRequest;
+import com.binzc.oj.model.dto.user.*;
 import com.binzc.oj.model.entity.User;
+import com.binzc.oj.model.vo.ListUserVO;
 import com.binzc.oj.model.vo.LoginUserVO;
 import com.binzc.oj.service.UserService;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import static com.binzc.oj.constant.UserConstant.USER_LOGIN_STATE;
 
@@ -33,11 +34,11 @@ public class UserController {
 
     /**
      * 测试接口
-     * @Author binzc
      *
      * @return
+     * @Author binzc
      */
-    @GetMapping ("/hello")
+    @GetMapping("/hello")
     public String hello() {
         return "hello";
     }
@@ -56,24 +57,24 @@ public class UserController {
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
-        String userRole =userRegisterRequest.getUserRole();
+        String userRole = userRegisterRequest.getUserRole();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return null;
         }
-        long result = userService.userRegister(userAccount, userPassword, checkPassword,userRole);
-        if(result<0){
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR,"账号已存在");
+        long result = userService.userRegister(userAccount, userPassword, checkPassword, userRole);
+        if (result < 0) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR, "账号已存在");
         }
         return ResultUtils.success(result);
     }
 
     /**
      * 用户登录接口
-     * @Author binzc
      *
      * @param userLoginRequest
      * @param request
      * @return
+     * @Author binzc
      */
     @PostMapping("/login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -102,7 +103,33 @@ public class UserController {
     }
 
     /**
+     * 获取当前所有用户
+     */
+    @PostMapping("/get/list")
+    public BaseResponse<List<ListUserVO>> getAllUser(@RequestBody UserListRequest userListRequest, HttpServletRequest request) {
+        return ResultUtils.success(userService.getAllUser(userListRequest, request));
+    }
+
+
+    /**
+     * 修改用户
+     */
+    @PostMapping("/update")
+    public BaseResponse<String> updateUser(@RequestBody UserUpdateRequest userListRequest, HttpServletRequest request) {
+        return ResultUtils.success(userService.updateUser(userListRequest, request));
+    }
+
+    /**
+     * 删除用户
+     */
+    @PostMapping("/delete")
+    public BaseResponse<String> deleteUser(@RequestBody UserUpdateRequest userDeleteRequest, HttpServletRequest request) {
+        return ResultUtils.success(userService.deleteUser(userDeleteRequest, request));
+    }
+
+    /**
      * 上传头像
+     *
      * @param file
      * @param request
      * @return
@@ -110,12 +137,12 @@ public class UserController {
      */
     @PostMapping("/uploadAvatar")
     public BaseResponse<String> uploadAvatar(@RequestPart("file") MultipartFile file, HttpServletRequest request) {
-        String url= userService.uploadAvatar(file, request);
+        String url = userService.uploadAvatar(file, request);
         return ResultUtils.success(url);
     }
 
     /**
-     *
+     * 确认修改头像是否
      */
     @PostMapping("/confirmChangeAvatar")
     public BaseResponse confirmChangeAvatar(@RequestBody UserConfirmChangeAvatar userConfirmChangeAvatar, HttpServletRequest request) {
@@ -125,7 +152,7 @@ public class UserController {
         if (currentUser == null || currentUser.getId() == null) {
             return ResultUtils.error(ErrorCode.NOT_LOGIN_ERROR);
         }
-        String message=userService.confirmChangeAvatar(userConfirmChangeAvatar.getUrl(),userConfirmChangeAvatar.isYesOrNo(), request);
+        String message = userService.confirmChangeAvatar(userConfirmChangeAvatar.getUrl(), userConfirmChangeAvatar.isYesOrNo(), request);
         return ResultUtils.success(message);
     }
 

@@ -6,6 +6,9 @@ import com.binzc.oj.common.ErrorCode;
 import com.binzc.oj.common.FileUtils;
 import com.binzc.oj.exception.BusinessException;
 import com.binzc.oj.mapper.UserMapper;
+import com.binzc.oj.model.dto.user.UserListRequest;
+import com.binzc.oj.model.dto.user.UserUpdateRequest;
+import com.binzc.oj.model.vo.ListUserVO;
 import com.binzc.oj.model.vo.LoginUserVO;
 import com.binzc.oj.service.UserService;
 import com.binzc.oj.model.entity.User;
@@ -25,8 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 import static com.binzc.oj.constant.UserConstant.USER_LOGIN_STATE;
 
@@ -222,6 +224,77 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件不存在");
             }
         }
+    }
+
+    /**
+     * 获取当前所有用户
+     *
+     * @return
+     */
+    @Override
+    public List<ListUserVO> getAllUser(UserListRequest userListRequest, HttpServletRequest request) {
+        // 判断当前登录的是否是管理员
+        User currentUser = getLoginUser(request);
+        if (Objects.equals(currentUser.getUserRole(), "admin")) {
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            String account = userListRequest.getUserAccount();
+            String role = userListRequest.getUserRole();
+            String name = userListRequest.getUserName();
+
+            // 核心用法：eq(boolean condition, R column, Object val)
+            // 只有当 StringUtils.isNotBlank(...) 返回 true 时，才会拼接后面的 SQL
+            queryWrapper.eq(StringUtils.isNotBlank(account), "userAccount", account);
+            queryWrapper.eq(StringUtils.isNotBlank(role), "userRole", role);
+            queryWrapper.eq(StringUtils.isNotBlank(name), "userName", name);
+            List<User> userList = this.baseMapper.selectList(queryWrapper);
+            List<ListUserVO> loginUserVOList = new ArrayList<>();
+            for (User user : userList) {
+                ListUserVO loginUserVO = new ListUserVO();
+                BeanUtils.copyProperties(user, loginUserVO);
+                loginUserVOList.add(loginUserVO);
+            }
+            return loginUserVOList;
+        }
+        throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param userListRequest
+     * @param request
+     * @return
+     */
+    @Override
+    public String updateUser(UserUpdateRequest userListRequest, HttpServletRequest request) {
+        // 判断当前登录的是否是管理员
+        User currentUser = getLoginUser(request);
+        if (Objects.equals(currentUser.getUserRole(), "admin")) {
+            User user = new User();
+            BeanUtils.copyProperties(userListRequest, user);
+            this.baseMapper.updateById(user);
+            return "修改成功";
+        }
+        throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+    }
+
+    /**
+     * 删除用户
+     * @param userDeleteRequest
+     * @param request
+     * @return
+     */
+    @Override
+    public String deleteUser(UserUpdateRequest userDeleteRequest, HttpServletRequest request) {
+        // 判断当前登录的是否是管理员
+        User currentUser = getLoginUser(request);
+        if (Objects.equals(currentUser.getUserRole(), "admin")) {
+            User user = new User();
+            BeanUtils.copyProperties(userDeleteRequest, user);
+            this.baseMapper.deleteById(user);
+            return "删除成功";
+        }
+        throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
     }
 }
 

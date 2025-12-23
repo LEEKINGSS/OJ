@@ -1,12 +1,16 @@
 package com.binzc.oj.service;
 
 import com.binzc.oj.common.BaseResponse;
+import com.binzc.oj.model.dto.user.UserListRequest;
+import com.binzc.oj.model.dto.user.UserUpdateRequest;
 import com.binzc.oj.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.binzc.oj.model.vo.ListUserVO;
 import com.binzc.oj.model.vo.LoginUserVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author binzc
@@ -71,4 +75,24 @@ public interface UserService extends IService<User> {
      */
     String confirmChangeAvatar(String url, boolean yesOrNo, HttpServletRequest request);
 
+    /**
+     * 获取当前所有用户
+     */
+    List<ListUserVO> getAllUser(UserListRequest userListRequest, HttpServletRequest request);
+
+    /**
+     * 修改用户
+     * @param userListRequest
+     * @param request
+     * @return
+     */
+    String updateUser(UserUpdateRequest userListRequest, HttpServletRequest request);
+
+    /**
+     * 删除用户
+     * @param userDeleteRequest
+     * @param request
+     * @return
+     */
+    String deleteUser(UserUpdateRequest userDeleteRequest, HttpServletRequest request);
 }
