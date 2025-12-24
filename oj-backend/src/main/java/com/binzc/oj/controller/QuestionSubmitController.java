@@ -27,20 +27,20 @@ public class QuestionSubmitController {
     private QuestionSubmitService questionSubmitService;
 
     @Resource
-    private  UserService userService;
+    private UserService userService;
 
     /**
      * 在做题页面获取到以前提交过的代码
-     * @param questionId
      *
+     * @param questionId
      * @param request
      * @return
      */
     @GetMapping("getCode")
-    public BaseResponse<CodeVo> getCode(@RequestParam(value = "questionId", required = true) long questionId, HttpServletRequest request){
-        User user=userService.getLoginUser(request);
-        long userId=user.getId();
-        CodeVo codeVo=questionSubmitService.getCode(questionId,userId);
+    public BaseResponse<CodeVo> getCode(@RequestParam(value = "questionId", required = true) long questionId, HttpServletRequest request) {
+        User user = userService.getLoginUser(request);
+        long userId = user.getId();
+        CodeVo codeVo = questionSubmitService.getCode(questionId, userId);
         return ResultUtils.success(codeVo);
     }
 
@@ -52,29 +52,27 @@ public class QuestionSubmitController {
      * @return
      */
     @PostMapping("/")
-    public BaseResponse<QuestionSubmitVo> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest, HttpServletRequest request){
+    public BaseResponse<QuestionSubmitVo> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest, HttpServletRequest request) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能点赞
         final User loginUser = userService.getLoginUser(request);
-        QuestionSubmitVo questionSubmitVo=questionSubmitService.doQuestionSubmit(questionSubmitAddRequest,loginUser);
+        QuestionSubmitVo questionSubmitVo = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitVo);
 
     }
 
     @PostMapping("/submitRecord")
-    public BaseResponse<SubmitRecodWithPageVo> submitRecords(@RequestBody QueryParmRequest queryParmRequest, HttpServletRequest request){
-        //先登录
-        //final User loginUser = userService.getLoginUser(request);
-        SubmitRecodWithPageVo submitRecodWithPageVo=questionSubmitService.getSubmitRecords(queryParmRequest);
+    public BaseResponse<SubmitRecodWithPageVo> submitRecords(@RequestBody QueryParmRequest queryParmRequest, HttpServletRequest request) {
+        SubmitRecodWithPageVo submitRecodWithPageVo = questionSubmitService.getSubmitRecords(queryParmRequest, request);
         return ResultUtils.success(submitRecodWithPageVo);
     }
 
     @GetMapping("/record/{id}")
-    public BaseResponse<SubmitRecordDetail> getRecord(@PathVariable("id") Long id, HttpServletResponse response){
+    public BaseResponse<SubmitRecordDetail> getRecord(@PathVariable("id") Long id, HttpServletResponse response) {
         //Todo:是否需要登录权限
-        SubmitRecordDetail submitRecordDetail=questionSubmitService.getSubmitRecordDetail(id);
+        SubmitRecordDetail submitRecordDetail = questionSubmitService.getSubmitRecordDetail(id);
         return ResultUtils.success(submitRecordDetail);
 
     }

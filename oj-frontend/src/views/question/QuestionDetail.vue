@@ -451,6 +451,7 @@ const submitCode = async () => {
 
 const isNotLoggedIn = computed(() => {
   const loginUser = store.state.user?.loginUser;
+  console.log("当前用户信息：", loginUser);
   // 检查是否包含未登录角色或没有 id
   return (
     !loginUser || !loginUser.id || loginUser.userRole === ACCESS_ENUM.NOT_LOGIN

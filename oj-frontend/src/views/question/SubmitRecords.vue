@@ -8,6 +8,7 @@
           placeholder="输入用户名"
           allow-clear
           v-model="queryParm.userName"
+          v-show="viewAble"
         />
         <a-input
           :style="{ width: '320px' }"
@@ -140,9 +141,11 @@ import {
   QuestionSubmitControllerService,
   QueryParmRequest,
 } from "../../../generated";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { Message } from "@arco-design/web-vue";
+import { useStore } from "vuex";
 import router from "@/router";
+import ACCESS_ENUM from "@/access/accessEnum";
 // export type QueryParmRequest = {
 //     language?: string;
 //     pageNo?: number;
@@ -157,7 +160,8 @@ import router from "@/router";
 //     submitRecordSimples?: Array<SubmitRecordSimple>;
 //     total?: number;
 // };
-
+const store = useStore();
+const viewAble = ref(false);
 const queryParm = ref<QueryParmRequest>({
   pageNo: 1,
   pageSize: 10,
@@ -182,6 +186,8 @@ onMounted(async () => {
   } else {
     Message.error("错误，拉取数据失败");
   }
+  viewAble.value = isNotLoggedIn.value;
+  console.log("viewAble:", viewAble.value);
 });
 //表格数据
 const handlePageChange = async (page: number, pagination: any) => {
@@ -195,6 +201,13 @@ const handlePageChange = async (page: number, pagination: any) => {
     Message.error("错误，拉取数据失败");
   }
 };
+
+const isNotLoggedIn = computed(() => {
+  const loginUser = store.state.user?.loginUser;
+  console.log("当前用户信息：", loginUser);
+  // 检查是否包含未登录角色或没有 id
+  return loginUser.userRole === ACCESS_ENUM.ADMIN;
+});
 
 /**
  * 渲染标签颜色

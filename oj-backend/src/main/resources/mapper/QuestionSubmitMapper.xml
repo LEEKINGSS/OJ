@@ -84,4 +84,62 @@
         </where>
     </select>
 
+    <select id="getSubmitRecordSimpleListById" resultType="com.binzc.oj.model.vo.SubmitRecordSimple">
+        SELECT
+        qs.id AS submitId,
+        u.id AS userId,
+        u.userName AS userName,
+        u.userAvatar AS userAvatar,
+        q.id AS questionId,
+        q.title AS questionTitle,
+        qs.language AS language,
+        qs.status as status,
+        CONCAT(ROUND(CHAR_LENGTH(qs.code) / 1024, 2), ' KB') AS codeLength,
+        qs.createTime AS submitTime,
+        NULL AS timeUse,
+        NULL AS memoryUse,
+        NULL AS message,
+        qs.judgeInfo AS judgeInfo
+        FROM
+        question_submit qs
+        LEFT JOIN user u ON qs.userId = u.id
+        LEFT JOIN question q ON qs.questionId = q.id
+        <where>
+            AND qs.userId = #{userId}
+            <if test="questionTitle != null and questionTitle != ''">
+                AND q.title LIKE CONCAT('%', #{questionTitle}, '%')
+            </if>
+            <if test="submitStatus != null and submitStatus != -1">
+                AND #{submitStatus} = qs.status
+            </if>
+            <if test="language != null and language != ''">
+                AND qs.language = #{language}
+            </if>
+        </where>
+        ORDER BY qs.createTime DESC
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
+    <!-- 查询总数 -->
+    <select id="countSubmitRecordSimpleListById" resultType="long">
+        SELECT COUNT(*)
+        FROM
+        question_submit qs
+        LEFT JOIN user u ON qs.userId = u.id
+        LEFT JOIN question q ON qs.questionId = q.id
+        <where>
+            AND qs.userId = #{userId}
+            <if test="questionTitle != null and questionTitle != ''">
+                AND q.title LIKE CONCAT('%', #{questionTitle}, '%')
+            </if>
+            <if test="submitStatus != null and submitStatus != -1">
+                AND #{submitStatus} = qs.status
+            </if>
+            <if test="language != null and language != ''">
+                AND qs.language = #{language}
+            </if>
+        </where>
+    </select>
+
 </mapper>

@@ -38,7 +38,7 @@ public interface QuestionSubmitService extends IService<QuestionSubmit> {
      * @param queryParmRequest
      * @return
      */
-    SubmitRecodWithPageVo getSubmitRecords(QueryParmRequest queryParmRequest);
+    SubmitRecodWithPageVo getSubmitRecords(QueryParmRequest queryParmRequest, HttpServletRequest request);
     /**
      * 获取提交记录详情
      * @param submitId
