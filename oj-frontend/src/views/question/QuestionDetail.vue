@@ -2,7 +2,25 @@
   <div class="problem-page">
     <a-row :gutter="[16, 16]" class="main-layout">
       <a-col :span="5" class="sidebar-col">
-        <a-card class="sidebar-card" title="ECC加解密" :bordered="false">
+        <!-- <a-card class="sidebar-card" title="ECC加解密" :bordered="false"> -->
+        <a-card class="sidebar-card" :bordered="false">
+          <template #title>
+            <a-select
+              v-model="currentCategory"
+              placeholder="请选择实验类型"
+              :bordered="false"
+              style="width: 100%; font-weight: bold; color: var(--color-text-1)"
+              @change="handleCategoryChange"
+            >
+              <a-option
+                v-for="item in categoryOptions"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </a-option>
+            </a-select>
+          </template>
           <a-list
             :data="questionList"
             :bordered="false"
@@ -257,6 +275,7 @@ const route = useRoute();
 const store = useStore();
 
 // --- 状态定义 ---
+const currentCategory = ref("ecc"); // 默认选中 ECC
 const loading = ref(false); // 详情加载状态
 const listLoading = ref(false); // 列表加载状态
 const submitting = ref(false);
@@ -266,6 +285,25 @@ const tagsList = ref([
   "ECC加解密流程",
   "明文嵌入方法（至少实现2种）",
 ]);
+
+const categoryOptions = [
+  { label: "ECC加解密", value: "ecc" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+];
+
+const hardcodedData: Record<string, any[]> = {
+  ecc: ["ECC的点乘运算实现", "ECC加解密流程", "明文嵌入方法（至少实现2种）"],
+  rsa: [
+    "RSA加解密实现",
+    "RSA选择密文攻击",
+    "RSA共模攻击",
+    "RSA小加密指数迭代攻击",
+    "费马因子分解法实现",
+    "Wiener低解密指数攻击",
+  ],
+};
+
+const id = ref(""); // 当前选中的题目ID
 const tags = ref([]);
 const form = ref<{
   code: string;
@@ -297,6 +335,21 @@ const searchParams = ref({
 /**
  * 加载题目列表（侧边栏）
  */
+
+// 下拉框切换事件
+const handleCategoryChange = (val: string) => {
+  // 1. 重置页码
+  // searchParams.value.current = 1;
+  // 2. 重新加载列表数据
+  loadQuestionList();
+  // 3. (可选) 自动选中列表第一个
+  // if (questionList.value.length > 0) {
+  // id.value = questionList.value[0].id;
+  // }
+  currentCategory.value = val;
+  console.log("当前选中类别：", hardcodedData[val]);
+};
+
 const loadQuestionList = async () => {
   listLoading.value = true;
   try {
@@ -304,7 +357,8 @@ const loadQuestionList = async () => {
       searchText.value, // 搜索标题
       searchParams.value.current,
       searchParams.value.pageSize,
-      tagsList.value.join(",") // tags，这里暂时不传，如果需要侧边栏也支持标签筛选可扩展
+      hardcodedData[currentCategory.value].join(",")
+      // tagsList.value.join(",")
     );
     if (res.code === 0) {
       // 兼容后端返回的数据结构，参考参考代码中的 questions 或 records
