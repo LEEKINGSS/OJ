@@ -50,6 +50,9 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/question/submitRecords",
     name: "提交记录",
     component: SubmitRecordsView,
+    meta: {
+      access: !ACCESS_ENUM.NOT_LOGIN,
+    },
   },
   {
     path: "/hide",
@@ -79,11 +82,17 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/test",
     name: "开发人员测试使用",
     component: TestView,
+    meta: {
+      access: ACCESS_ENUM.ADMIN,
+    },
   },
   {
     path: "/question/add",
     name: "添加题目",
     component: QuestionAddView,
+    meta: {
+      access: ACCESS_ENUM.ADMIN,
+    },
   },
   {
     path: "/question/:id",
