@@ -25,24 +25,27 @@
 
     <select id="getSubmitRecordSimpleList" resultType="com.binzc.oj.model.vo.SubmitRecordSimple">
         SELECT
-            qs.id AS submitId,
-            u.id AS userId,
-            u.userName AS userName,
-            u.userAvatar AS userAvatar,
-            q.id AS questionId,
-            q.title AS questionTitle,
-            qs.language AS language,
-            qs.status as status,
+        qs.id AS submitId,
+        u.id AS userId,
+        u.userName AS userName,
+        u.userAccount AS userAccount,
+        u.userAvatar AS userAvatar,
+        q.id AS questionId,
+        q.title AS questionTitle,
+        qs.language AS language,
+        qs.status as status,
         CONCAT(ROUND(CHAR_LENGTH(qs.code) / 1024, 2), ' KB') AS codeLength,
         qs.createTime AS submitTime,
         NULL AS timeUse,
         NULL AS memoryUse,
         NULL AS message,
-        qs.judgeInfo AS judgeInfo
+        qs.judgeInfo AS judgeInfo,
+        qs.judgeMessages As judgeMessages,
+        qs.`code` AS `code`
         FROM
-            question_submit qs
-            LEFT JOIN user u ON qs.userId = u.id
-            LEFT JOIN question q ON qs.questionId = q.id
+        question_submit qs
+        LEFT JOIN user u ON qs.userId = u.id
+        LEFT JOIN question q ON qs.questionId = q.id
         <where>
             <if test="userName != null and userName != ''">
                 AND u.userName LIKE CONCAT('%', #{userName}, '%')
@@ -58,7 +61,7 @@
             </if>
         </where>
         ORDER BY qs.createTime DESC
-            LIMIT #{pageSize} OFFSET #{offset}
+        LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <!-- 查询总数 -->
@@ -89,6 +92,7 @@
         qs.id AS submitId,
         u.id AS userId,
         u.userName AS userName,
+        u.userAccount AS userAccount,
         u.userAvatar AS userAvatar,
         q.id AS questionId,
         q.title AS questionTitle,
@@ -99,7 +103,9 @@
         NULL AS timeUse,
         NULL AS memoryUse,
         NULL AS message,
-        qs.judgeInfo AS judgeInfo
+        qs.judgeInfo AS judgeInfo,
+        qs.judgeMessages As judgeMessages,
+        qs.`code` AS `code`
         FROM
         question_submit qs
         LEFT JOIN user u ON qs.userId = u.id

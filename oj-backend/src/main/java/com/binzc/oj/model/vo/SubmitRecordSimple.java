@@ -22,6 +22,12 @@ public class SubmitRecordSimple {
      * 用户id
      */
     private String userId;
+
+    /**
+     * 用户账号
+     */
+    private String userAccount;
+
     /**
      * 用户名字
      */
@@ -63,7 +69,7 @@ public class SubmitRecordSimple {
      */
 
     private String message;
-    
+
     //题目部分
 
     /**
@@ -79,6 +85,16 @@ public class SubmitRecordSimple {
      * 判题信息，拆开成时间状态内存
      */
     private String judgeInfo;
+
+    /**
+     * 判题信息,包含用户运行结果和答案
+     */
+    private String judgeMessages;
+
+    /**
+     * 代码
+     */
+    private String code;
 
 
 }

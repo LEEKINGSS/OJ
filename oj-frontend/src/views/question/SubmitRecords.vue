@@ -128,8 +128,167 @@
               </a-row>
             </template>
           </a-table-column>
+
+          <a-table-column title="操作" :width="100">
+            <template #cell="{ record }">
+              <a-button
+                type="outline"
+                size="mini"
+                @click="handleExportPdf(record)"
+              >
+                <template #icon> 📥 </template>
+                导出PDF
+              </a-button>
+            </template>
+          </a-table-column>
         </template>
       </a-table>
+    </div>
+
+    <div style="position: fixed; top: 0; left: -9999px; z-index: -1">
+      <div
+        id="pdf-template"
+        style="width: 600px; padding: 40px; font-family: 'SimHei', sans-serif"
+      >
+        <h2
+          style="
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+          "
+        >
+          提交记录报告
+        </h2>
+
+        <div style="margin-top: 30px">
+          <p><strong>提交 ID：</strong> {{ pdfRecord.submitId }}</p>
+          <p><strong>题目名称：</strong> {{ pdfRecord.questionTitle }}</p>
+          <p><strong>提交账户：</strong> {{ pdfRecord.userAccount }}</p>
+          <p><strong>提交时间：</strong> {{ pdfRecord.submitTime }}</p>
+        </div>
+
+        <table
+          style="
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            text-align: center;
+          "
+        >
+          <tr style="background-color: #f2f2f2">
+            <th style="border: 1px solid #ddd; padding: 8px">状态</th>
+            <th style="border: 1px solid #ddd; padding: 8px">语言</th>
+            <th style="border: 1px solid #ddd; padding: 8px">耗时</th>
+            <th style="border: 1px solid #ddd; padding: 8px">内存</th>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px">
+              {{ pdfRecord.message }}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px">
+              {{ pdfRecord.language }}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px">
+              {{ pdfRecord.timeUse }} ms
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px">
+              {{ pdfRecord.memoryUse }} kb
+            </td>
+          </tr>
+        </table>
+
+        <div style="margin-top: 25px">
+          <h4
+            style="
+              margin-bottom: 10px;
+              border-left: 4px solid #3498db;
+              padding-left: 8px;
+            "
+          >
+            用户代码
+          </h4>
+          <pre
+            style="
+              background-color: #f8f9fa;
+              border: 1px solid #e9ecef;
+              padding: 10px;
+              border-radius: 4px;
+              font-family: Consolas, Monaco, monospace;
+              font-size: 12px;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+            "
+            >{{ pdfRecord.code || "无代码数据" }}</pre
+          >
+        </div>
+
+        <div style="margin-top: 20px" v-if="pdfRecord.judgeMessages">
+          <div style="margin-bottom: 15px">
+            <h4
+              style="
+                margin-bottom: 5px;
+                border-left: 4px solid #e74c3c;
+                padding-left: 8px;
+              "
+            >
+              用户运行结果 / 报错信息
+            </h4>
+            <pre
+              style="
+                background-color: #fff0f0;
+                border: 1px solid #ffdcdc;
+                padding: 10px;
+                border-radius: 4px;
+                font-family: Consolas, monospace;
+                font-size: 12px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              "
+              >{{
+                pdfRecord.judgeMessages ||
+                pdfRecord.judgeMessages.status ||
+                "无输出"
+              }}</pre
+            >
+          </div>
+
+          <div v-if="pdfRecord.judgeMessages.statusSingle">
+            <h4
+              style="
+                margin-bottom: 5px;
+                border-left: 4px solid #52c41a;
+                padding-left: 8px;
+              "
+            >
+              标准答案 (预期输出)
+            </h4>
+            <pre
+              style="
+                background-color: #f6ffed;
+                border: 1px solid #b7eb8f;
+                padding: 10px;
+                border-radius: 4px;
+                font-family: Consolas, monospace;
+                font-size: 12px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              "
+              >{{ pdfRecord.judgeMessages.statusSingle }}</pre
+            >
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 40px;
+            text-align: right;
+            color: #999;
+            font-size: 12px;
+          "
+        >
+          <p>Generated by OJ System</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -141,11 +300,12 @@ import {
   QuestionSubmitControllerService,
   QueryParmRequest,
 } from "../../../generated";
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch, computed, nextTick } from "vue";
 import { Message } from "@arco-design/web-vue";
 import { useStore } from "vuex";
 import router from "@/router";
 import ACCESS_ENUM from "@/access/accessEnum";
+import html2pdf from "html2pdf.js";
 // export type QueryParmRequest = {
 //     language?: string;
 //     pageNo?: number;
@@ -162,6 +322,7 @@ import ACCESS_ENUM from "@/access/accessEnum";
 // };
 const store = useStore();
 const viewAble = ref(false);
+const pdfRecord = ref<any>({});
 const queryParm = ref<QueryParmRequest>({
   pageNo: 1,
   pageSize: 10,
@@ -232,6 +393,28 @@ const goToRecord = (id?: number) => {
   router.push({
     name: "recordDetail",
     params: { id },
+  });
+};
+
+const handleExportPdf = (record: any) => {
+  // 1. 将当前点击行的数据赋值给 PDF 模板变量
+  pdfRecord.value = record;
+
+  // 2. 等待 DOM 更新（确保 pdfRecord 的数据渲染到了 #pdf-template 中）
+  nextTick(() => {
+    const element = document.getElementById("pdf-template");
+
+    // 3. 配置 html2pdf 参数
+    const opt = {
+      margin: 1,
+      filename: `submission_${record.submitId}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 }, // 提高清晰度
+      jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
+    };
+
+    // 4. 执行生成并下载
+    html2pdf().set(opt).from(element).save();
   });
 };
 </script>
