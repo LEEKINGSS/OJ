@@ -36,3 +36,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+generate-api.sh
+oj-frontend/generate-api.sh
+setup-wsl.sh
+start-all.sh
+start-backend.sh
+start-frontend.sh

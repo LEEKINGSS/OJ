@@ -22,7 +22,7 @@ export type OpenAPIConfig = {
 export const OpenAPI: OpenAPIConfig = {
     BASE: 'http://localhost:8121',
     VERSION: '1.0',
-    WITH_CREDENTIALS: true,
+    WITH_CREDENTIALS: true,  // 启用 credentials 以支持 session cookie
     CREDENTIALS: 'include',
     TOKEN: undefined,
     USERNAME: undefined,
