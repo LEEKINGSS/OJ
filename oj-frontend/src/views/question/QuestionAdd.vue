@@ -36,16 +36,36 @@
 
       <a-form-item
         field="content"
-        tooltip="请输入题目内容"
+        tooltip="请输入题目内容或上传 Word 文档"
         label="题目内容"
         label-col-flex="100px"
         style="width: 100%"
       >
-        <md-editor
-          :value="form.content"
-          @change="onContentChange"
-          style="width: 100%"
-        />
+        <div style="width: 100%">
+          <a-space style="margin-bottom: 8px">
+            <a-upload
+              :auto-upload="false"
+              :show-file-list="false"
+              accept=".doc,.docx"
+              @change="handleWordUpload"
+              :limit="1"
+            >
+              <template #upload-button>
+                <a-button type="outline" :loading="uploading">
+                  上传 Word 文档
+                </a-button>
+              </template>
+            </a-upload>
+            <a-typography-text type="secondary" style="font-size: 12px">
+              支持 .doc 和 .docx 格式
+            </a-typography-text>
+          </a-space>
+          <md-editor
+            :value="form.content"
+            @change="onContentChange"
+            style="width: 100%"
+          />
+        </div>
       </a-form-item>
 
       <a-form-item
@@ -232,6 +252,8 @@
 import { ref, watch } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { QuestionControllerService } from "../../../generated";
+import axios from "axios";
+import { OpenAPI } from "../../../generated/core/OpenAPI";
 const form = ref({
   title: "",
   tags: [],
@@ -299,6 +321,111 @@ const onContentChange = (value: string) => {
  */
 const onAnswerChange = (value: string) => {
   form.value.answer = value;
+};
+
+/**
+ * Word 文档上传处理
+ */
+const uploading = ref(false);
+const handleWordUpload = async (fileListOrItem: any) => {
+  console.log("handleWordUpload 被调用", fileListOrItem);
+  console.log(
+    "参数类型:",
+    typeof fileListOrItem,
+    "是否为数组:",
+    Array.isArray(fileListOrItem)
+  );
+
+  // 处理不同的参数格式
+  let fileItem;
+  if (Array.isArray(fileListOrItem)) {
+    // 如果是数组，取第一个
+    if (fileListOrItem.length === 0) {
+      console.log("文件列表为空");
+      return;
+    }
+    fileItem = fileListOrItem[0];
+  } else {
+    // 如果是单个对象
+    fileItem = fileListOrItem;
+  }
+
+  console.log("fileItem:", fileItem);
+
+  // 获取文件对象
+  const file = fileItem?.file || fileItem;
+
+  console.log("选择的文件:", file);
+  console.log("文件详情:", {
+    name: file?.name,
+    size: file?.size,
+    type: file?.type,
+  });
+
+  if (!file) {
+    console.log("文件对象不存在");
+    return;
+  }
+
+  // 检查文件类型
+  const fileName = file.name.toLowerCase();
+  if (!fileName.endsWith(".doc") && !fileName.endsWith(".docx")) {
+    message.error("只支持 .doc 和 .docx 格式的 Word 文档");
+    return;
+  }
+
+  // 检查文件大小（限制为 10MB）
+  if (file.size > 10 * 1024 * 1024) {
+    message.error("文件大小不能超过 10MB");
+    return;
+  }
+
+  uploading.value = true;
+  console.log("开始上传文件，文件名:", file.name, "文件大小:", file.size);
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    console.log("FormData 已创建");
+
+    // 调用后端接口解析 Word 文档
+    const baseURL = OpenAPI.BASE || "http://localhost:8121";
+    const url = `${baseURL}/api/question/parseWord`;
+    console.log("准备发送请求到:", url);
+
+    const response = await axios.post(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: OpenAPI.WITH_CREDENTIALS,
+    });
+
+    console.log("收到响应:", response.data);
+
+    if (response.data.code === 0) {
+      const markdownContent = response.data.data;
+      console.log("解析成功，内容长度:", markdownContent?.length);
+      // 将解析后的内容填充到编辑器
+      form.value.content = markdownContent;
+      message.success("Word 文档解析成功，内容已填充到编辑器");
+    } else {
+      console.error("解析失败，响应:", response.data);
+      message.error("解析失败：" + (response.data.message || "未知错误"));
+    }
+  } catch (error: any) {
+    console.error("Word 文档上传失败:", error);
+    console.error("错误详情:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
+    const errorMessage =
+      error.response?.data?.message || error.message || "未知错误";
+    message.error("上传失败：" + errorMessage);
+  } finally {
+    uploading.value = false;
+    console.log("上传流程结束");
+  }
 };
 /**
  * 新增判题用例

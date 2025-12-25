@@ -14,10 +14,12 @@ import com.binzc.oj.model.vo.QuestionDetailSafeVo;
 import com.binzc.oj.model.vo.QuestionListSafeVo;
 import com.binzc.oj.service.QuestionService;
 import com.binzc.oj.service.UserService;
+import com.binzc.oj.service.WordParseService;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,9 @@ public class QuestionController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private WordParseService wordParseService;
 
     private final static Gson GSON = new Gson();
     /**
@@ -94,5 +99,24 @@ public class QuestionController {
     public BaseResponse<QuestionDetailSafeVo> getQuestionById(@PathVariable("id") long id) {
         QuestionDetailSafeVo questionDetailSafeVo = questionService.getQuestionById(id);
         return ResultUtils.success(questionDetailSafeVo);
+    }
+
+    /**
+     * 解析 Word 文档为题目内容
+     * @param file Word 文档文件
+     * @return 解析后的 Markdown 格式内容
+     */
+    @PostMapping("/parseWord")
+    public BaseResponse<String> parseWordDocument(@RequestPart("file") MultipartFile file) {
+        log.info("收到 Word 文档解析请求，文件名: {}, 文件大小: {}", 
+                file.getOriginalFilename(), file.getSize());
+        try {
+            String markdownContent = wordParseService.parseWordToMarkdown(file);
+            log.info("Word 文档解析成功，内容长度: {}", markdownContent.length());
+            return ResultUtils.success(markdownContent);
+        } catch (Exception e) {
+            log.error("Word 文档解析失败", e);
+            throw e;
+        }
     }
 }
