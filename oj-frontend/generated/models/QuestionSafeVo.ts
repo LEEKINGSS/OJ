@@ -3,10 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type QuestionSafeVo = {
-    acceptedNum?: number;
-    id?: number;
-    submitNum?: number;
-    tags?: string;
-    title?: string;
+  acceptedNum?: number;
+  id?: number;
+  submitNum?: number;
+  tags?: string;
+  title?: string;
 };
-

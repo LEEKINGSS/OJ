@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubmitRecodWithPageVo } from './SubmitRecodWithPageVo';
+import type { SubmitRecodWithPageVo } from "./SubmitRecodWithPageVo";
 export type BaseResponse_SubmitRecodWithPageVo_ = {
-    code?: number;
-    data?: SubmitRecodWithPageVo;
-    message?: string;
+  code?: number;
+  data?: SubmitRecodWithPageVo;
+  message?: string;
 };
-

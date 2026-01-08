@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type BaseResponse = {
-    code?: number;
-    data?: any;
-    message?: string;
+  code?: number;
+  data?: any;
+  message?: string;
 };
-

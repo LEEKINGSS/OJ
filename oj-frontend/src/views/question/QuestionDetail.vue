@@ -142,6 +142,13 @@
               <a-button type="text" size="small" @click="resetCode"
                 ><icon-refresh /> 重置代码</a-button
               >
+              <a-button
+                type="primary"
+                size="small"
+                @click="runCode"
+                :loading="running"
+                ><icon-play-arrow /> 运行</a-button
+              >
             </div>
           </div>
 
@@ -160,7 +167,49 @@
                 <span>运行结果</span>
               </div>
 
-              <div v-if="submitResult" class="result-status">
+              <!-- 直接运行结果 -->
+              <div v-if="runResult" class="result-status">
+                <div class="run-output">
+                  <div
+                    v-if="
+                      runResult.executeMessageList &&
+                      runResult.executeMessageList.length > 0
+                    "
+                  >
+                    <div
+                      v-for="(msg, index) in runResult.executeMessageList"
+                      :key="index"
+                      class="output-item"
+                    >
+                      <div v-if="msg.message" class="output-message">
+                        <strong>输出：</strong>
+                        <pre>{{ msg.message }}</pre>
+                      </div>
+                      <div v-if="msg.errorMessage" class="output-error">
+                        <strong>错误：</strong>
+                        <pre>{{ msg.errorMessage }}</pre>
+                      </div>
+                      <div v-if="msg.time !== undefined" class="output-info">
+                        <icon-clock-circle /> 执行时间: {{ msg.time }} ms
+                      </div>
+                      <div v-if="msg.memory !== undefined" class="output-info">
+                        <icon-storage /> 内存使用:
+                        {{ (msg.memory / 1024).toFixed(2) }} KB
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else class="output-message">
+                    <strong>状态：</strong>
+                    <pre>{{ runResult.message || "执行完成，但没有输出" }}</pre>
+                    <div v-if="runResult.status === 0" style="margin-top: 8px; color: #86909c;">
+                      提示：代码沙箱可能未返回执行结果，请检查代码沙箱服务是否正常运行。
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 判题结果 -->
+              <div v-if="submitResult && !runResult" class="result-status">
                 <a-tag v-if="submitResult.status === 2" color="green">
                   <template #icon><icon-check-circle /></template>
                   {{
@@ -214,12 +263,11 @@
             <a-button
               type="primary"
               status="success"
-              :disabled="isNotLoggedIn"
-              :loading="submitting"
-              @click="submitCode"
+              :loading="running"
+              @click="runCode"
             >
               <template #icon><icon-play-arrow /></template>
-              提交运行
+              运行
             </a-button>
           </div>
         </a-card>
@@ -256,7 +304,9 @@ import {
 
 import CodeEditor from "@/components/CodeEditor.vue";
 import MdViewer from "@/components/MdViewer.vue";
+import axios from "axios";
 import {
+  OpenAPI,
   QuestionControllerService,
   QuestionSubmitControllerService,
 } from "../../../generated";
@@ -279,6 +329,7 @@ const currentCategory = ref("ecc"); // 默认选中 ECC
 const loading = ref(false); // 详情加载状态
 const listLoading = ref(false); // 列表加载状态
 const submitting = ref(false);
+const running = ref(false);
 const question = ref<any>({});
 const tagsList = ref([
   "ECC的点乘运算实现",
@@ -313,6 +364,7 @@ const form = ref<{
   language: "java",
 });
 const submitResult = ref<any>(null);
+const runResult = ref<any>(null);
 const timer = ref<any>(null); // 用于轮询的定时器
 
 // 默认代码模板
@@ -398,6 +450,55 @@ const resetCode = () => {
 
 const showAnswer = () => {
   defaultCodeMap[form.value.language] = question.value.answer;
+};
+
+// 直接运行代码（不判题）
+const runCode = async () => {
+  if (!form.value.code) {
+    message.warning("代码不能为空");
+    return;
+  }
+  running.value = true;
+  runResult.value = null;
+  submitResult.value = null; // 清除判题结果
+
+  try {
+    // 调用后端运行接口（不判题）
+    const baseURL = OpenAPI.BASE || "http://localhost:8121";
+    const url = `${baseURL}/api/question/submit/run`;
+    const { data } = await axios.post(
+      url,
+      new URLSearchParams({
+        code: form.value.code,
+        language: form.value.language,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        withCredentials: OpenAPI.WITH_CREDENTIALS,
+      }
+    );
+
+    if (data?.code === 0) {
+      runResult.value = data.data;
+      message.success("运行完成");
+    } else {
+      message.error("运行失败：" + (data?.message || "未知错误"));
+      runResult.value = {
+        message: data?.message || "运行失败",
+        executeMessageList: [],
+      };
+    }
+  } catch (error: any) {
+    message.error("运行出错：" + error.message);
+    runResult.value = {
+      message: "运行出错：" + error.message,
+      executeMessageList: [],
+    };
+  } finally {
+    running.value = false;
+  }
 };
 
 // --- 核心业务逻辑 (详情页) ---
@@ -629,6 +730,16 @@ onUnmounted(() => {
 .editor-card {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.editor-card :deep(.arco-card-body) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
 }
 .editor-header {
   height: 48px;
@@ -646,19 +757,23 @@ onUnmounted(() => {
   flex-direction: column; /* 新增：垂直排列 */
 }
 .editor-middle {
-  height: 150px;
+  min-height: 150px;
+  max-height: 200px;
   overflow: hidden;
   display: flex; /* 新增 */
   flex-direction: column; /* 新增：垂直排列 */
+  flex-shrink: 0;
 }
 .editor-footer {
   height: 56px;
+  min-height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
   border-top: 1px solid var(--color-border);
   background: var(--color-bg-2);
+  flex-shrink: 0;
 }
 .login-tip {
   font-size: 13px;
@@ -670,7 +785,9 @@ onUnmounted(() => {
 
 /* 新增结果面板样式 */
 .run-result-panel {
-  height: 200px; /* 固定高度，或者使用 max-height */
+  height: 100%;
+  min-height: 150px;
+  max-height: 200px;
   border-top: 1px solid var(--color-border);
   background-color: var(--color-bg-1);
   padding: 12px 16px;
@@ -704,5 +821,57 @@ onUnmounted(() => {
 .result-info {
   font-size: 13px;
   color: var(--color-text-2);
+}
+
+/* 运行结果样式 */
+.run-output {
+  padding: 8px 0;
+}
+
+.output-item {
+  margin-bottom: 12px;
+  padding: 8px;
+  background-color: var(--color-bg-2);
+  border-radius: 4px;
+}
+
+.output-message {
+  margin-bottom: 8px;
+}
+
+.output-message pre {
+  margin: 4px 0;
+  padding: 8px;
+  background-color: var(--color-bg-1);
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+
+.output-error {
+  margin-bottom: 8px;
+  color: var(--color-red-6);
+}
+
+.output-error pre {
+  margin: 4px 0;
+  padding: 8px;
+  background-color: var(--color-red-light-1);
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+
+.output-info {
+  font-size: 12px;
+  color: var(--color-text-3);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>

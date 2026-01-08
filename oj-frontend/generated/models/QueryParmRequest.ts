@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type QueryParmRequest = {
-    language?: string;
-    pageNo?: number;
-    pageSize?: number;
-    questionTitle?: string;
-    submitStatus?: number;
-    userName?: string;
+  language?: string;
+  pageNo?: number;
+  pageSize?: number;
+  questionTitle?: string;
+  submitStatus?: number;
+  userName?: string;
 };
-

@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type JudgeMessage = {
-    memory?: number;
-    status?: string;
-    statusSingle?: string;
-    time?: number;
+  memory?: number;
+  status?: string;
+  statusSingle?: string;
+  time?: number;
 };
-

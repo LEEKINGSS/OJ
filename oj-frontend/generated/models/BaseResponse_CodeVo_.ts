@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeVo } from './CodeVo';
+import type { CodeVo } from "./CodeVo";
 export type BaseResponse_CodeVo_ = {
-    code?: number;
-    data?: CodeVo;
-    message?: string;
+  code?: number;
+  data?: CodeVo;
+  message?: string;
 };
-

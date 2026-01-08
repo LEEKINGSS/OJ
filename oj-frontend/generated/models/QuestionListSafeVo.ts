@@ -2,12 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { QuestionSafeVo } from './QuestionSafeVo';
+import type { QuestionSafeVo } from "./QuestionSafeVo";
 export type QuestionListSafeVo = {
-    currentPage?: number;
-    pageSize?: number;
-    questions?: Array<QuestionSafeVo>;
-    totalPages?: number;
-    totalRecords?: number;
+  currentPage?: number;
+  pageSize?: number;
+  questions?: Array<QuestionSafeVo>;
+  totalPages?: number;
+  totalRecords?: number;
 };
-
