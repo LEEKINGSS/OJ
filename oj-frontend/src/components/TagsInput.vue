@@ -270,11 +270,101 @@ const tagsList = ref([
     ],
   },
   {
+    title: "经典密码学",
+    tags: [
+      { value: "单表替换", checked: false },
+      { value: "周期置换密码（换位密码）", checked: false },
+      { value: "维吉尼亚密码的加密解密", checked: false },
+      { value: "HILL密码的加解密及破译", checked: false },
+      { value: "Playfair的加解密及破译", checked: false },
+    ],
+  },
+  {
+    title: "序列密码",
+    tags: [
+      { value: "M序列的构造及破译", checked: false },
+      { value: "非线性寄存器的构造实现", checked: false },
+    ],
+  },
+  {
+    title: "DES密码",
+    tags: [
+      { value: "验证DES弱密钥和半弱密钥", checked: false },
+      { value: "基于DES的五种分组模式的实现", checked: false },
+    ],
+  },
+  {
+    title: "AES及背包试验",
+    tags: [
+      { value: "基于AES的五种分组模式的实现", checked: false },
+      { value: "超背包密码加解密实现", checked: false },
+    ],
+  },
+  {
+    title: "RSA实现及安全分析",
+    tags: [
+      { value: "RSA加解密实现", checked: false },
+      { value: "RSA选择密文攻击", checked: false },
+      { value: "RSA共模攻击", checked: false },
+      { value: "RSA小加密指数迭代攻击", checked: false },
+      { value: "费马因子分解法实现", checked: false },
+      { value: "Wiener低解密指数攻击", checked: false },
+    ],
+  },
+  {
+    title: "离散对数ELGamal型密码及其安全性分析",
+    tags: [
+      { value: "Elgamal加解密实验", checked: false },
+      { value: "大步小步法攻击", checked: false },
+    ],
+  },
+  {
     title: "ECC加解密",
     tags: [
       { value: "ECC的点乘运算实现", checked: false },
       { value: "ECC加解密流程", checked: false },
       { value: "明文嵌入方法（至少实现2种）", checked: false },
+    ],
+  },
+  {
+    title: "基于RSA的各类签名实现",
+    tags: [
+      { value: "RSA签名实现", checked: false },
+      { value: "基于RSA的代理签名", checked: false },
+      { value: "RSA有序多重签名", checked: false },
+      { value: "基于RSA的强盲签名", checked: false },
+    ],
+  },
+  {
+    title: "基于ECC的各类签名实现",
+    tags: [
+      { value: "ECC数字签名", checked: false },
+      { value: "基于ECC的代理签名", checked: false },
+      { value: "ECC有序多重签名", checked: false },
+    ],
+  },
+  {
+    title: "基于离散对数的各类签名实现",
+    tags: [
+      { value: "Elgamal签名", checked: false },
+      { value: "基于离散对数的盲签名", checked: false },
+      { value: "Elgamal无序多重签名", checked: false },
+      { value: "基于离散对数的群签名", checked: false },
+      { value: "基于shamir的门限签名", checked: false },
+    ],
+  },
+  {
+    title: "零知识证明",
+    tags: [
+      { value: "基于RSA的零知识证明", checked: false },
+      { value: "基于离散对数问题的零知识证明", checked: false },
+    ],
+  },
+  {
+    title: "哈希函数",
+    tags: [
+      { value: "MD4的攻击实验", checked: false },
+      { value: "Hash应用于消息认证码", checked: false },
     ],
   },
 ]);

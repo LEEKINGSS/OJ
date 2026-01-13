@@ -3,8 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SubmitRecordSimple = {
+    code?: string;
     codeLength?: string;
     judgeInfo?: string;
+    judgeMessages?: string;
     language?: string;
     memoryUse?: number;
     message?: string;
@@ -14,6 +16,7 @@ export type SubmitRecordSimple = {
     submitId?: number;
     submitTime?: string;
     timeUse?: number;
+    userAccount?: string;
     userAvatar?: string;
     userId?: string;
     userName?: string;

@@ -18,8 +18,8 @@
             disabled
           >
             <div class="titlebar">
-              <img class="logo" src="../assets/logo.png" alt="" />
-              <div class="title">Code demo</div>
+              <img class="logo" src="../assets/fanglogo.png" alt="" />
+              <div class="title">应用密码学实验平台</div>
             </div>
           </a-menu-item>
 
@@ -99,6 +99,7 @@
   height: 48px;
   color: black;
   margin-left: 16px;
+  line-height: 48px;
 }
 </style>
 <script setup>

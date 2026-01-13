@@ -352,6 +352,7 @@ onMounted(async () => {
 });
 //表格数据
 const handlePageChange = async (page: number, pagination: any) => {
+  console.log("当前页码:", page);
   queryParm.value.pageNo = page;
   const res = await QuestionSubmitControllerService.submitRecordsUsingPost(
     queryParm.value

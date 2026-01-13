@@ -42,6 +42,11 @@ public class QuestionSafeVo {
      */
     private Integer acceptedNum;
 
+    /**
+     * 题目封面图片
+     */
+    private String coverUrl;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

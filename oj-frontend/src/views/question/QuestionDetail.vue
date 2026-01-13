@@ -132,7 +132,6 @@
                 <a-option value="java">Java</a-option>
                 <a-option value="cpp">C++</a-option>
                 <a-option value="python">Python</a-option>
-                <a-option value="go">Go</a-option>
               </a-select>
             </div>
             <div class="right">

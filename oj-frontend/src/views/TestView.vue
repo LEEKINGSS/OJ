@@ -124,7 +124,7 @@ const data = ref({
   userName: "",
 });
 onMounted(async () => {
-  const res = await QuestionSubmitControllerService.getRecordUsingGet(67);
+  const res = await QuestionSubmitControllerService.getRecordUsingGet(176);
   if (res.code === 0) {
     data.value = res.data;
     console.log("res =", data.value);
