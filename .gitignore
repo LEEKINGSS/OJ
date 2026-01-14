@@ -30,3 +30,5 @@ Thumbs.db
 # Git
 .git/
 temp/
+oj-frontend/dist/
+oj-backend/static/images/
