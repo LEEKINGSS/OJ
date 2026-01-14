@@ -3,7 +3,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 sandbox:
-  mount-path: /usr/local/project/OJ/sandbox
+  mount-path: /usr/local/vue/temp
 server:
   port: 8122
   address: 0.0.0.0
