@@ -286,7 +286,17 @@ const tagsList = ref([
 ]);
 
 const categoryOptions = [
+  { label: "经典密码学", value: "classic" },
   { label: "ECC加解密", value: "ecc" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
+  { label: "RSA实现及安全分析", value: "rsa" },
   { label: "RSA实现及安全分析", value: "rsa" },
 ];
 
@@ -299,6 +309,14 @@ const hardcodedData: Record<string, any[]> = {
     "RSA小加密指数迭代攻击",
     "费马因子分解法实现",
     "Wiener低解密指数攻击",
+  ],
+  classic: [
+    "单表替换",
+    "维吉尼亚密码实现",
+    "仿射密码实现",
+    "列换位密码实现",
+    "RC4流密码实现",
+    "栅栏密码实现",
   ],
 };
 

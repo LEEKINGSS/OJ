@@ -87,8 +87,8 @@
                   {{ q.title }}
                 </router-link>
 
-                <div class="meta" v-if="q.submitNum">
-                  <div class="meta-line">
+                <div class="meta">
+                  <div class="meta-line" v-if="q.submitNum">
                     <span class="meta-label">提交</span>
                     <a-tag color="#fadb14">{{ q.submitNum ?? 0 }}</a-tag>
 
@@ -98,7 +98,7 @@
                     <a-tag color="#52c41a">{{ q.acceptedNum ?? 0 }}</a-tag>
                   </div>
 
-                  <div class="meta-line">
+                  <div class="meta-line" v-if="q.submitNum">
                     <span class="meta-label">通过率</span>
                     <a-tooltip :content="acceptRateText(q)">
                       <a-progress
