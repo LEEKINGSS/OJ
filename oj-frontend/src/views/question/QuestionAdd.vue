@@ -403,10 +403,27 @@ const handleWordUpload = async (fileListOrItem: any) => {
     console.log("收到响应:", response.data);
 
     if (response.data.code === 0) {
-      const markdownContent = response.data.data;
-      console.log("解析成功，内容长度:", markdownContent?.length);
+      const result = response.data.data;
+      // 支持新的返回格式：{success, html, message, warnings}
+      // 也兼容旧的返回格式：直接是字符串
+      let content = "";
+      if (typeof result === "string") {
+        // 旧格式：直接是 Markdown 字符串
+        content = result;
+      } else if (result && result.html) {
+        // 新格式：包含 HTML 的对象
+        content = result.html;
+        if (result.warnings && result.warnings.length > 0) {
+          console.warn("解析警告:", result.warnings);
+          message.warning("解析成功，但有警告：" + result.warnings.join("; "));
+        }
+      } else {
+        throw new Error("未知的返回格式");
+      }
+      
+      console.log("解析成功，内容长度:", content?.length);
       // 将解析后的内容填充到编辑器
-      form.value.content = markdownContent;
+      form.value.content = content;
       message.success("Word 文档解析成功，内容已填充到编辑器");
     } else {
       console.error("解析失败，响应:", response.data);
