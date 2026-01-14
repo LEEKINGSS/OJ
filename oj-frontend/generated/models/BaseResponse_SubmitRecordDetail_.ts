@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubmitRecordDetail } from "./SubmitRecordDetail";
+import type { SubmitRecordDetail } from './SubmitRecordDetail';
 export type BaseResponse_SubmitRecordDetail_ = {
-  code?: number;
-  data?: SubmitRecordDetail;
-  message?: string;
+    code?: number;
+    data?: SubmitRecordDetail;
+    message?: string;
 };
+

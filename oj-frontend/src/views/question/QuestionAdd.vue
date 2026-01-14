@@ -249,11 +249,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { QuestionControllerService } from "../../../generated";
 import axios from "axios";
 import { OpenAPI } from "../../../generated/core/OpenAPI";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
+const updateId = route.params.id;
+
 const form = ref({
   title: "",
   tags: [],
@@ -272,11 +278,24 @@ const form = ref({
   ],
 });
 const doSubmit = async () => {
-  const res = await QuestionControllerService.addQuestionUsingPost(form.value);
-  if (res.code == 0) {
-    message.success("添加成功");
+  // 区分更新还是新增
+  if (updateId) {
+    const res = await QuestionControllerService.updateQuestionUsingPost({
+      ...form.value,
+      id: updateId,
+    });
+    if (res.code === 0) {
+      message.success("更新成功");
+      router.push({
+        path: `/question/${updateId}`,
+      });
+    } else message.error("更新失败");
   } else {
-    message.error("添加失败");
+    const res = await QuestionControllerService.addQuestionUsingPost(
+      form.value
+    );
+    if (res.code === 0) message.success("创建成功");
+    else message.error("创建失败");
   }
 };
 /**
@@ -303,6 +322,7 @@ const handDelete = (tag: { value: string; checked: boolean }) => {
   console.log("tag被删除", tag);
   console.log("tagsChose被删除", tagsChose.value);
 };
+
 watch(
   () => tagsChose,
   (newTags) => {
@@ -310,6 +330,7 @@ watch(
   },
   { deep: true }
 );
+
 /**
  * * @description 题目内容相关数据处理
  */
@@ -460,4 +481,54 @@ const handleAdd = () => {
 const handleDelete = (index: number) => {
   form.value.judgeCase.splice(index, 1);
 };
+
+// 初始化加载
+onMounted(async () => {
+  if (updateId) {
+    const res = await QuestionControllerService.getQuestionByIdUsingGet(
+      updateId
+    );
+    if (res.code === 0) {
+      console.log("加载题目成功", res);
+      const data = res.data;
+      // 回显数据到 form
+      form.value.title = data.title;
+      form.value.content = data.content;
+      form.value.answer = data.answer;
+      let tagsArray = [];
+      if (Array.isArray(data.tags)) {
+        tagsArray = data.tags;
+      } else {
+        tagsArray = JSON.parse(data.tags || "[]");
+      }
+      form.value.tags = tagsArray;
+
+      // *** 关键步骤：同步更新 UI 组件的状态 (tagsChose) ***
+      // 必须把 tags 转换成 { value: 'xxx', checked: true } 的格式，TagsInput 组件才能显示
+      tagsChose.value = tagsArray.map((tag) => ({
+        value: tag,
+        checked: true,
+      }));
+
+      // 3. 处理 JudgeCase (判题用例)
+      // 截图里 judgeCase 没显示，但如果后端返回的是对象/数组，也要去掉 JSON.parse
+      if (Array.isArray(data.judgeCase)) {
+        form.value.judgeCase = data.judgeCase;
+      } else {
+        form.value.judgeCase = JSON.parse(data.judgeCase || "[]");
+      }
+
+      // 4. 处理 JudgeConfig (判题配置)
+      // 截图里 judgeConfig 是 Object，所以也不能用 JSON.parse
+      if (typeof data.judgeConfig === "object" && data.judgeConfig !== null) {
+        form.value.judgeConfig = data.judgeConfig;
+      } else {
+        form.value.judgeConfig = JSON.parse(data.judgeConfig || "{}");
+      }
+      // 处理 TagsInput 组件的回显 tagsChose ...
+    } else {
+      message.error("加载题目失败");
+    }
+  }
+});
 </script>

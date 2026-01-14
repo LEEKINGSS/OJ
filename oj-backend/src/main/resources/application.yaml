@@ -8,12 +8,10 @@ server:
         max-age: 2592000
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    # 建议生产环境通过环境变量传入 URL
-    url: ${MYSQL_URL:jdbc:mysql://172.23.216.95:3306/oj-database?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/oj-database?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
     username: ${MYSQL_USER:root}
-    # ⚠️ 安全警告：建议不要在代码中硬编码密码，生产环境请使用环境变量 MYSQL_PASSWORD
-    password: ${MYSQL_PASSWORD:123.com}
+    password: ${MYSQL_PASSWORD:20040713bzc}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -34,7 +32,5 @@ mybatis-plus:
 
 
 codesandbox:
-  # 默认为 remote 模式，支持环境变量 CODESANDBOX_TYPE 覆盖
-  # 临时改为 example 模式用于测试（example 会返回模拟数据）
-  type: ${CODESANDBOX_TYPE:example}
-  url: ${CODESANDBOX_URL:http://172.22.232.42:8122/api/code/executeCode}
+  type: ${CODESANDBOX_TYPE:remote}
+  url: ${CODESANDBOX_URL:http://localhost:8122/api/code/executeCode}

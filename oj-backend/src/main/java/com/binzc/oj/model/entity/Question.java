@@ -91,6 +91,11 @@ public class Question implements Serializable {
      */
     private Integer isDelete;
 
+    /**
+     * 封面
+     */
+    private String coverUrl;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

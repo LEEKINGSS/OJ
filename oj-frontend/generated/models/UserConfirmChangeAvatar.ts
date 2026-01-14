@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UserConfirmChangeAvatar = {
-  url?: string;
-  yesOrNo?: boolean;
+    url?: string;
+    yesOrNo?: boolean;
 };
+

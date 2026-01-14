@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CodeVo = {
-  code?: string;
-  language?: string;
+    code?: string;
+    language?: string;
 };
+

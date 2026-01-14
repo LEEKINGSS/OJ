@@ -70,6 +70,7 @@ public class PythonCodeExecutor implements CodeExecutor {
                 .withHostConfig(hostConfig)
                 .withNetworkDisabled(true)
                 .withReadonlyRootfs(true)
+                .withWorkingDir("/app")  // 设置工作目录
                 .withCmd("tail", "-f", "/dev/null")
                 .withAttachStdin(true)
                 .withAttachStderr(true)
@@ -86,7 +87,7 @@ public class PythonCodeExecutor implements CodeExecutor {
 
             // 创建命令
             ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerId)
-                    .withCmd("python", "/app/Main.py")
+                    .withCmd("python", "Main.py")
                     .withAttachStdin(true)
                     .withAttachStdout(true)
                     .withAttachStderr(true)

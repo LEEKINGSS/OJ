@@ -15,6 +15,7 @@ import QuestionListView from "@/views/question/QuestionList.vue";
 import QuestionDetailView from "@/views/question/QuestionDetail.vue";
 import SubmitRecordsView from "@/views/question/SubmitRecords.vue";
 import SubmitRecordView from "@/views/question/SubmitRecord.vue";
+import QuestionManageView from "@/views/question/QuestionManageView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -72,8 +73,16 @@ export const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/admin",
-    name: "管理员界面",
+    name: "用户管理界面",
     component: AdminView,
+    meta: {
+      access: ACCESS_ENUM.ADMIN,
+    },
+  },
+  {
+    path: "/questionmanage",
+    name: "题目管理界面",
+    component: QuestionManageView,
     meta: {
       access: ACCESS_ENUM.ADMIN,
     },
@@ -92,6 +101,15 @@ export const routes: Array<RouteRecordRaw> = [
     component: QuestionAddView,
     meta: {
       access: ACCESS_ENUM.ADMIN,
+    },
+  },
+  {
+    path: "/question/add/:id",
+    name: "修改题目",
+    component: QuestionAddView,
+    meta: {
+      access: ACCESS_ENUM.ADMIN,
+      hideInMenu: true,
     },
   },
   {

@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { QuestionDetailSafeVo } from "./QuestionDetailSafeVo";
+import type { QuestionDetailSafeVo } from './QuestionDetailSafeVo';
 export type BaseResponse_QuestionDetailSafeVo_ = {
-  code?: number;
-  data?: QuestionDetailSafeVo;
-  message?: string;
+    code?: number;
+    data?: QuestionDetailSafeVo;
+    message?: string;
 };
+

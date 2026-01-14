@@ -3,15 +3,15 @@
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
         <a-space>
-          <img src="../assets/logo.png" class="logo" />
-          <div>Code demo</div>
+          <img src="../assets/fanglogo.png" class="logo" />
+          <div>应用密码学实验平台</div>
         </a-space>
       </a-layout-header>
       <a-layout-content class="content">
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://liking.cloud" target="_blank"> Code demo by liking </a>
+        <a href="https://liking.cc" target="_blank"> Code demo by liking </a>
       </a-layout-footer>
     </a-layout>
   </div>
