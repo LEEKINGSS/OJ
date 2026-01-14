@@ -144,11 +144,11 @@ const isNotLogin = computed(() => {
 });
 
 const changeName = () => {
-  store.dispatch("user/updateLoginUserName", {
-    userName: "宾子成",
-    userRole: ACCESS_ENUM.USER,
-  });
-  store.dispatch("user/updateShowLoginModel", true);
+  // store.dispatch("user/updateLoginUserName", {
+  //   userName: "宾子成",
+  //   userRole: ACCESS_ENUM.USER,
+  // });
+  // store.dispatch("user/updateShowLoginModel", true);
 };
 const gotoLogin = () => {
   routerInstance.push({ path: "/user/login" });

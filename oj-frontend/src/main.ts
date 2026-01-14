@@ -6,5 +6,8 @@ import router from "./router";
 import store from "./store";
 import "bytemd/dist/index.css";
 import "./access";
+import { OpenAPI } from "../generated";
+
+OpenAPI.BASE = "http://localhost:8081";
 
 createApp(App).use(ArcoVue).use(store).use(router).mount("#app");

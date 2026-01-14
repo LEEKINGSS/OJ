@@ -8,9 +8,9 @@ server:
         max-age: 2592000
 spring:
   datasource:
-    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/oj-database?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    url: ${MYSQL_URL:jdbc:mysql://172.23.216.95:3306/oj-database?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
     username: ${MYSQL_USER:root}
-    password: ${MYSQL_PASSWORD:20040713bzc}
+    password: ${MYSQL_PASSWORD:123.com}
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:
@@ -33,4 +33,4 @@ mybatis-plus:
 
 codesandbox:
   type: ${CODESANDBOX_TYPE:remote}
-  url: ${CODESANDBOX_URL:http://localhost:8122/api/code/executeCode}
+  url: ${CODESANDBOX_URL:http://172.22.232.42:8122/api/code/executeCode}

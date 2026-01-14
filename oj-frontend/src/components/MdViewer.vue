@@ -5,8 +5,10 @@
 <script setup lang="ts">
 import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
+import math from "@bytemd/plugin-math";
 import { Viewer } from "@bytemd/vue-next";
 import { withDefaults, defineProps } from "vue";
+import "katex/dist/katex.css";
 
 /**
  * 定义组件属性类型
@@ -18,6 +20,7 @@ interface Props {
 const plugins = [
   gfm(),
   highlight(),
+  math(),
   // Add more plugins here
 ];
 
