@@ -84,16 +84,32 @@ public class WordParseServiceImpl implements WordParseService {
         html = sb.toString();
         
         // 处理代码块，保留语言标识
-        Pattern codePattern = Pattern.compile("<pre><code class=\"language-([^\"]+)\">([\\s\\S]*?)</code></pre>");
+        Pattern codePattern = Pattern.compile("<pre><code class=\"language-([^\"]+)\">([\\s\\S]*?)</code></pre>", Pattern.DOTALL);
         Matcher codeMatcher = codePattern.matcher(html);
         sb = new StringBuffer();
         while (codeMatcher.find()) {
             String lang = codeMatcher.group(1);
             String code = codeMatcher.group(2);
-            // 转换为Markdown代码块：```language\ncode\n```
-            codeMatcher.appendReplacement(sb, Matcher.quoteReplacement("```" + lang + "\n" + code + "\n```"));
+            // 先解码HTML实体
+            code = decodeHtmlEntities(code);
+            // 转换为Markdown代码块：```language\ncode\n```\n\n（注意末尾的两个换行）
+            codeMatcher.appendReplacement(sb, Matcher.quoteReplacement("\n```" + lang + "\n" + code + "\n```\n\n"));
         }
         codeMatcher.appendTail(sb);
+        html = sb.toString();
+        
+        // 处理没有语言标识的代码块
+        Pattern simpleCodePattern = Pattern.compile("<pre><code>([\\s\\S]*?)</code></pre>", Pattern.DOTALL);
+        Matcher simpleCodeMatcher = simpleCodePattern.matcher(html);
+        sb = new StringBuffer();
+        while (simpleCodeMatcher.find()) {
+            String code = simpleCodeMatcher.group(1);
+            // 先解码HTML实体
+            code = decodeHtmlEntities(code);
+            // 转换为Markdown代码块
+            simpleCodeMatcher.appendReplacement(sb, Matcher.quoteReplacement("\n```\n" + code + "\n```\n\n"));
+        }
+        simpleCodeMatcher.appendTail(sb);
         html = sb.toString();
         
         // 处理其他HTML标签
@@ -108,8 +124,6 @@ public class WordParseServiceImpl implements WordParseService {
             .replaceAll("</em>", "*")
             .replaceAll("<code>", "`")
             .replaceAll("</code>", "`")
-            .replaceAll("<pre><code[^>]*>", "```\n")
-            .replaceAll("</code></pre>", "```\n")
             .replaceAll("<li>", "- ")
             .replaceAll("</li>", "")
             .replaceAll("<ul>|</ul>|<ol>|</ol>", "")
@@ -125,6 +139,20 @@ public class WordParseServiceImpl implements WordParseService {
             .replaceAll("&lt;", "<")
             .replaceAll("&gt;", ">");
         return md.trim();
+    }
+    
+    /**
+     * 解码HTML实体（用于代码块内容）
+     */
+    private String decodeHtmlEntities(String text) {
+        if (text == null) return "";
+        return text
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&quot;", "\"")
+            .replace("&#39;", "'")
+            .replace("&nbsp;", " ");
     }
     
     @Override
