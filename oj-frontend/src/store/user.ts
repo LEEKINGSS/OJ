@@ -12,12 +12,20 @@ const state: any = () => ({
 const actions = {
   async getLoginUser({ commit }: any, payload: any) {
     // 从远程请求获取登录信息（带错误处理）
-
-    const res = await UserControllerService.getLoginUserUsingGet();
-    if (res.code === 0) {
-      commit("updateUser", res.data);
-    } else {
-      // 登录失败，设为未登录
+    try {
+      const res = await UserControllerService.getLoginUserUsingGet();
+      if (res.code === 0) {
+        commit("updateUser", res.data);
+      } else {
+        // 登录失败，设为未登录
+        commit("updateUser", {
+          ...state.loginUser,
+          userRole: ACCESS_ENUM.NOT_LOGIN,
+        });
+      }
+    } catch (error: any) {
+      // 捕获异常（如未登录错误），设为未登录状态
+      console.log("获取登录用户失败:", error);
       commit("updateUser", {
         ...state.loginUser,
         userRole: ACCESS_ENUM.NOT_LOGIN,
