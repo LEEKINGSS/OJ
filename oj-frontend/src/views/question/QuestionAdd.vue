@@ -294,8 +294,12 @@ const doSubmit = async () => {
     const res = await QuestionControllerService.addQuestionUsingPost(
       form.value
     );
-    if (res.code === 0) message.success("创建成功");
-    else message.error("创建失败");
+    if (res.code === 0) {
+      message.success("创建成功");
+      router.push({
+        path: `/question/list`,
+      });
+    } else message.error("创建失败");
   }
 };
 /**
@@ -441,7 +445,7 @@ const handleWordUpload = async (fileListOrItem: any) => {
       } else {
         throw new Error("未知的返回格式");
       }
-      
+
       console.log("解析成功，内容长度:", content?.length);
       // 将解析后的内容填充到编辑器
       form.value.content = content;

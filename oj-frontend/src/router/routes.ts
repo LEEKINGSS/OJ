@@ -101,6 +101,7 @@ export const routes: Array<RouteRecordRaw> = [
     component: QuestionAddView,
     meta: {
       access: ACCESS_ENUM.ADMIN,
+      hideInMenu: true,
     },
   },
   {

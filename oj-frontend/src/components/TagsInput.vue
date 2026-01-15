@@ -323,7 +323,8 @@ const tagsList = ref([
     tags: [
       { value: "ECC的点乘运算实现", checked: false },
       { value: "ECC加解密流程", checked: false },
-      { value: "明文嵌入方法（至少实现2种）", checked: false },
+      { value: "ECC 明文嵌入（基于哈希嵌入法）", checked: false },
+      { value: "ECC 明文嵌入（基于 Koblitz 方法）", checked: false },
     ],
   },
   {

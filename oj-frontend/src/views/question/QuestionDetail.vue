@@ -301,7 +301,12 @@ const categoryOptions = [
 ];
 
 const hardcodedData: Record<string, any[]> = {
-  ecc: ["ECC的点乘运算实现", "ECC加解密流程", "明文嵌入方法（至少实现2种）"],
+  ecc: [
+    "ECC的点乘运算实现",
+    "ECC加解密流程",
+    "ECC 明文嵌入（基于哈希嵌入法）",
+    "ECC 明文嵌入（基于 Koblitz 方法）",
+  ],
   rsa: [
     "RSA加解密实现",
     "RSA选择密文攻击",

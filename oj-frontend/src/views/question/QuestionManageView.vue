@@ -169,7 +169,7 @@ const toAddQuestion = () => {
  */
 const toUpdateQuestion = (question: any) => {
   router.push({
-    path: `/question/${question.id}`,
+    path: `/question/add/${question.id}`,
   });
 };
 
