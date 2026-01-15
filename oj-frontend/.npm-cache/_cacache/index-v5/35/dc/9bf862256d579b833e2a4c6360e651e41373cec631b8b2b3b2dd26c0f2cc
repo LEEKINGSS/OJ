@@ -1,0 +1,2 @@
+
+e2ef36320faa4b6bc435cf2d3398dcea506ec907	{"key":"make-fetch-happen:request-cache:https://mirrors.cloud.tencent.com/npm/boolbase/-/boolbase-1.0.0.tgz","integrity":"sha1-aN/1++YMUes3cl6p4+0xDcwed24=","time":1768406235570,"size":851,"metadata":{"time":1768406235469,"url":"https://mirrors.cloud.tencent.com/npm/boolbase/-/boolbase-1.0.0.tgz","reqHeaders":{},"resHeaders":{"cache-control":"max-age=300","content-type":"application/octet-stream; charset=utf-8","date":"Wed, 14 Jan 2026 15:57:14 GMT","expires":"Wed, 14 Jan 2026 16:02:14 GMT"},"options":{"compress":true}}}
