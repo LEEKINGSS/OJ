@@ -12,6 +12,7 @@
     "@arco-design/web-vue": "^2.57.0",
     "@bytemd/plugin-gfm": "^1.22.0",
     "@bytemd/plugin-highlight": "^1.22.0",
+    "@bytemd/plugin-math": "^1.22.0",
     "@bytemd/vue-next": "^1.22.0",
     "axios": "^1.9.0",
     "core-js": "^3.8.3",

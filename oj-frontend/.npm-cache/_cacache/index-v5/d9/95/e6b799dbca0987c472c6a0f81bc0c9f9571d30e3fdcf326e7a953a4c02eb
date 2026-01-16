@@ -1,0 +1,2 @@
+
+36d324529f721797a43145b419b927c74b322223	{"key":"make-fetch-happen:request-cache:https://mirrors.cloud.tencent.com/npm/inherits/-/inherits-2.0.3.tgz","integrity":"sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=","time":1768406241385,"size":2028,"metadata":{"time":1768406241380,"url":"https://mirrors.cloud.tencent.com/npm/inherits/-/inherits-2.0.3.tgz","reqHeaders":{},"resHeaders":{"cache-control":"max-age=300","content-type":"application/octet-stream; charset=utf-8","date":"Wed, 14 Jan 2026 15:57:20 GMT","expires":"Wed, 14 Jan 2026 16:02:20 GMT"},"options":{"compress":true}}}
