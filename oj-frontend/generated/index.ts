@@ -8,6 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { BaseResponse } from './models/BaseResponse';
+export type { BaseResponse_boolean_ } from './models/BaseResponse_boolean_';
 export type { BaseResponse_CodeVo_ } from './models/BaseResponse_CodeVo_';
 export type { BaseResponse_List_ListUserVO_ } from './models/BaseResponse_List_ListUserVO_';
 export type { BaseResponse_LoginUserVO_ } from './models/BaseResponse_LoginUserVO_';
@@ -32,6 +33,7 @@ export type { QuestionListSafeVo } from './models/QuestionListSafeVo';
 export type { QuestionSafeVo } from './models/QuestionSafeVo';
 export type { QuestionSubmitAddRequest } from './models/QuestionSubmitAddRequest';
 export type { QuestionSubmitVo } from './models/QuestionSubmitVo';
+export type { QuestionUpdateRequest } from './models/QuestionUpdateRequest';
 export type { SubmitRecodWithPageVo } from './models/SubmitRecodWithPageVo';
 export type { SubmitRecordDetail } from './models/SubmitRecordDetail';
 export type { SubmitRecordSimple } from './models/SubmitRecordSimple';

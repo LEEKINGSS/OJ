@@ -4,6 +4,7 @@
 /* eslint-disable */
 export type QuestionSafeVo = {
     acceptedNum?: number;
+    coverUrl?: string;
     id?: number;
     submitNum?: number;
     tags?: string;
